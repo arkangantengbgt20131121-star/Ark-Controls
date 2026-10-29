@@ -1,4 +1,3 @@
-<script>
 /* FX polish (non-invasif): efek "pop" tiap kali nilai angka berubah.
    Memakai MutationObserver, jadi tidak menyentuh logika data utama. */
 (function () {
@@ -18,4 +17,3 @@
     });
   } catch (err) { /* browser lama tanpa MutationObserver: abaikan diam-diam */ }
 })();
-</script>
