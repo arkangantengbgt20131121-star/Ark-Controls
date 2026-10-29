@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Panel kontrol micro:bit via Web Bluetooth (UART): pantau suhu & kelembaban, kendalikan lampu, kipas, dan Control Pad.">
-<meta name="theme-color" content="#0b111c">
-<title>micro:bit — Control Panel v3.0</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%230b111c'/><rect x='14' y='14' width='36' height='36' rx='7' fill='none' stroke='%23ffb454' stroke-width='3'/><circle cx='26' cy='27' r='3' fill='%23ffb454'/><circle cx='38' cy='27' r='3' fill='%23ffb454'/><path d='M25 39c3 2.4 6 3.6 7 3.6s4-1.2 7-3.6' stroke='%23ffb454' stroke-width='3' fill='none' stroke-linecap='round'/></svg>">
+<meta name="theme-color" content="#f4f6f3">
+<title>Ark Controls</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='%23f4f6f3'/><rect x='14' y='14' width='36' height='36' rx='7' fill='none' stroke='%23166b4b' stroke-width='3'/><circle cx='26' cy='27' r='3' fill='%23166b4b'/><circle cx='38' cy='27' r='3' fill='%23166b4b'/><path d='M25 39c3 2.4 6 3.6 7 3.6s4-1.2 7-3.6' stroke='%23166b4b' stroke-width='3' fill='none' stroke-linecap='round'/></svg>">
 <script>
   // Terapkan tema tersimpan sedini mungkin biar tidak "kedip" ke tema default saat reload.
   // (Sudah divalidasi: hanya id tema yang dikenal yang dipakai.)
@@ -19,53 +19,47 @@
     } catch (e) { /* abaikan: storage tidak tersedia */ }
   })();
 </script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   /* ================= TOKENS ================= */
   :root,
   html[data-theme="default"] {
-    color-scheme: dark;
-    --bg: #0b111c;
-    --bg-2: #0e1626;
-    --panel: #121c2e;
-    --panel-hi: #16233a;
-    --border: #223049;
-    --border-soft: #1a2537;
-    --text: #e7edf6;
-    --text-muted: #8ba0bf;
-    --text-dim: #5b6d8a;
+    color-scheme: light;
+    --bg: #f4f6f3;
+    --bg-2: #ffffff;
+    --panel: #ffffff;
+    --panel-hi: #fbfcfa;
+    --border: #dfe5df;
+    --border-soft: #e9ede9;
+    --text: #202b25;
+    --text-muted: #66736b;
+    --text-dim: #87928a;
 
-    --accent: #ffb454;
-    --accent-2: #ffc776;
-    --accent-dim: #7a5a2c;
-    --accent-rgb: 255, 180, 84;
-    --accent-contrast: #1a1408;
+    --accent: #166b4b;
+    --accent-2: #1d7a57;
+    --accent-dim: #b7d4c6;
+    --accent-rgb: 22, 107, 75;
+    --accent-contrast: #ffffff;
 
-    --grid-dot: rgba(255,255,255,0.035);
-    --grid-line: rgba(255,255,255,0.025);
+    --cyan: #287c91;
+    --cyan-dim: rgba(40,124,145,0.10);
+    --orange: #b86a36;
+    --success: #25815a;
+    --danger: #c64a4a;
+    --warn: #a96a16;
 
-    --cyan: #5eead4;
-    --cyan-dim: rgba(94,234,212,0.12);
-    --orange: #ff8a5c;
-    --success: #4ade80;
-    --danger: #f87171;
-    --warn: #fbbf24;
+    --track: #e1e7e2;
+    --knob: #ffffff;
+    --thumb-border: #ffffff;
+    --hover: rgba(22,107,75,0.06);
+    --shadow: 0 5px 18px rgba(29,48,37,0.05);
+    --chart-grid: rgba(32,43,37,0.08);
+    --chart-tick: #87928a;
+    --log-bg: #f7f9f7;
+    --log-border: #e1e7e2;
 
-    --track: #253451;
-    --knob: #cbd5e1;
-    --thumb-border: #0b1220;
-    --hover: rgba(255,255,255,0.045);
-    --shadow: 0 10px 30px rgba(0,0,0,0.35);
-    --chart-grid: rgba(255,255,255,0.06);
-    --chart-tick: #5b6d8a;
-    --log-bg: #060a12;
-    --log-border: #1a2537;
-
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-body: 'Inter', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-display: system-ui, sans-serif;
+    --font-body: system-ui, sans-serif;
+    --font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
 
     --radius: 14px;
     --radius-sm: 8px;
@@ -88,9 +82,6 @@
     --accent-dim: #fca5a5;
     --accent-rgb: 220, 38, 38;
     --accent-contrast: #ffffff;
-
-    --grid-dot: rgba(0,0,0,0.035);
-    --grid-line: rgba(0,0,0,0.025);
 
     --cyan: #0e7490;
     --cyan-dim: rgba(14,116,144,0.10);
@@ -123,9 +114,6 @@
     --accent-rgb: 17, 17, 17;
     --accent-contrast: #ffffff;
 
-    --grid-dot: rgba(0,0,0,0.035);
-    --grid-line: rgba(0,0,0,0.025);
-
     --cyan: #0e7490;
     --cyan-dim: rgba(0,0,0,0.05);
     --orange: #c2410c;
@@ -157,9 +145,6 @@
     --accent-rgb: 56, 189, 248;
     --accent-contrast: #04121b;
 
-    --grid-dot: rgba(255,255,255,0.035);
-    --grid-line: rgba(255,255,255,0.025);
-
     --track: #1c2836;
     --knob: #cbd5e1;
     --thumb-border: #020509;
@@ -186,9 +171,6 @@
     --accent-dim: #86efac;
     --accent-rgb: 22, 163, 74;
     --accent-contrast: #ffffff;
-
-    --grid-dot: rgba(0,0,0,0.035);
-    --grid-line: rgba(0,0,0,0.025);
 
     --cyan: #0e7490;
     --cyan-dim: rgba(22,163,74,0.08);
@@ -221,9 +203,6 @@
     --accent-rgb: 168, 85, 247;
     --accent-contrast: #ffffff;
 
-    --grid-dot: rgba(168,85,247,0.07);
-    --grid-line: rgba(168,85,247,0.05);
-
     --cyan: #22d3ee;
     --cyan-dim: rgba(34,211,238,0.12);
     --orange: #fb923c;
@@ -255,9 +234,6 @@
     --accent-rgb: 251, 146, 60;
     --accent-contrast: #2a1005;
 
-    --grid-dot: rgba(251,146,60,0.08);
-    --grid-line: rgba(251,146,60,0.05);
-
     --cyan: #2dd4bf;
     --cyan-dim: rgba(45,212,191,0.12);
     --orange: #f97316;
@@ -288,9 +264,6 @@
     --accent-dim: #f9a8d4;
     --accent-rgb: 236, 72, 153;
     --accent-contrast: #ffffff;
-
-    --grid-dot: rgba(236,72,153,0.06);
-    --grid-line: rgba(236,72,153,0.04);
 
     --cyan: #0e7490;
     --cyan-dim: rgba(236,72,153,0.08);
@@ -326,9 +299,6 @@
     --accent-rgb: 34, 211, 238;
     --accent-contrast: #001318;
 
-    --grid-dot: rgba(255,255,255,0.05);
-    --grid-line: rgba(255,255,255,0.03);
-
     --cyan: #22d3ee;
     --cyan-dim: rgba(34,211,238,0.10);
     --orange: #fb923c;
@@ -362,9 +332,6 @@
     --accent-rgb: 51, 255, 102;
     --accent-contrast: #02120a;
 
-    --grid-dot: rgba(51,255,102,0.06);
-    --grid-line: rgba(51,255,102,0.04);
-
     --cyan: #4ade80;
     --cyan-dim: rgba(51,255,102,0.10);
     --orange: #a3e635;
@@ -383,159 +350,20 @@
     --font-body: 'JetBrains Mono', monospace;
   }
 
-  /* ---------- Ciri khas tiap tema ---------- */
-  html[data-theme="purple"] .nav-item.active,
-  html[data-theme="purple"] .btn-primary {
-    box-shadow: 0 0 16px rgba(168,85,247,0.45);
-  }
-  html[data-theme="terminal"] body::after {
-    content: ""; position: fixed; inset: 0; z-index: 40; pointer-events: none;
-    background: repeating-linear-gradient(0deg, rgba(0,0,0,0.20) 0 1px, transparent 1px 4px);
-  }
-  html[data-theme="terminal"] .readout,
-  html[data-theme="terminal"] .mode-badge {
-    text-shadow: 0 0 10px rgba(51,255,102,0.55);
-  }
-
-  /* ----- Ciri khas 5 tema klasik ----- */
-  /* Surya: sorotan hangat dari atas */
-  html[data-theme="default"] body {
-    background:
-      radial-gradient(circle at 1px 1px, var(--grid-dot) 1px, transparent 0) 0 0/22px 22px,
-      radial-gradient(640px 300px at 50% -100px, rgba(255,180,84,0.12), transparent),
-      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-  }
-  /* Garuda: garis bendera di bawah brand */
-  html[data-theme="red"] .sidebar-brand {
-    border-bottom: 3px solid;
-    border-image: linear-gradient(90deg, #dc2626 50%, #d4d4d4 50%) 1;
-  }
-  /* Noir: minimalis brutalist — tanpa bayangan, sudut tajam */
-  html[data-theme="mono"] {
-    --shadow: none;
-    --radius: 6px;
-    --radius-sm: 3px;
-  }
-  html[data-theme="mono"] .card,
-  html[data-theme="mono"] .sidebar {
-    border-width: 2px;
-  }
-  /* Aurora: aurora malam + titik grid cyan */
-  html[data-theme="skyblue"] body {
-    background:
-      radial-gradient(circle at 1px 1px, rgba(56,189,248,0.10) 1px, transparent 0) 0 0/22px 22px,
-      radial-gradient(520px 260px at 12% -80px, rgba(56,189,248,0.14), transparent),
-      radial-gradient(520px 260px at 88% -60px, rgba(34,211,238,0.10), transparent),
-      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
-  }
-  /* Zamrud: halo daun segar di setiap kartu */
-  html[data-theme="green"] .card,
-  html[data-theme="green"] .sidebar {
-    box-shadow: 0 0 0 3px rgba(22,163,74,0.07), var(--shadow);
-  }
-
-  /* ---------- Animasi khas tiap tema ---------- */
-  /* Surya: napas cahaya hangat */
-  @keyframes tSurya { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
-  html[data-theme="default"] body::before {
-    content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background: radial-gradient(640px 300px at 50% -100px, rgba(255,180,84,0.10), transparent);
-    animation: tSurya 6s ease-in-out infinite;
-  }
-  /* Garuda: denyut merah pada menu aktif */
-  @keyframes tGaruda {
-    0%, 100% { box-shadow: 0 0 0 rgba(220,38,38,0); }
-    50% { box-shadow: 0 0 14px rgba(220,38,38,0.55); }
-  }
-  html[data-theme="red"] .nav-item.active { animation: tGaruda 2.2s ease-in-out infinite; }
-  /* Noir: kursor blok berkedip di tiap judul kartu */
-  @keyframes tNoir { 0%, 49% { opacity: 1; } 50%, 100% { opacity: 0; } }
-  html[data-theme="mono"] .card-head h2::after {
-    content: "\258D"; margin-left: 6px;
-    animation: tNoir 1.1s steps(1) infinite;
-  }
-  /* Aurora: cahaya utara bergoyang */
-  @keyframes tAurora { 0%, 100% { transform: translateX(-25px); } 50% { transform: translateX(25px); } }
-  html[data-theme="skyblue"] body::before {
-    content: ""; position: fixed; inset: -40px; z-index: 1; pointer-events: none;
-    background:
-      radial-gradient(520px 260px at 12% -80px, rgba(56,189,248,0.14), transparent),
-      radial-gradient(520px 260px at 88% -60px, rgba(34,211,238,0.10), transparent);
-    animation: tAurora 9s ease-in-out infinite;
-  }
-  /* Zamrud: halo daun bernapas */
-  @keyframes tZamrud {
-    0%, 100% { box-shadow: 0 0 0 3px rgba(22,163,74,0.07), var(--shadow); }
-    50% { box-shadow: 0 0 0 7px rgba(22,163,74,0.13), var(--shadow); }
-  }
-  html[data-theme="green"] .card,
-  html[data-theme="green"] .sidebar { animation: tZamrud 4.5s ease-in-out infinite; }
-  /* Ungu Neon: lampu neon berkedip */
-  @keyframes tNeon {
-    0%, 100% { box-shadow: 0 0 16px rgba(168,85,247,0.45); }
-    8% { box-shadow: 0 0 6px rgba(168,85,247,0.25); }
-    12% { box-shadow: 0 0 18px rgba(168,85,247,0.55); }
-    54% { box-shadow: 0 0 16px rgba(168,85,247,0.45); }
-    57% { box-shadow: 0 0 4px rgba(168,85,247,0.20); }
-    60% { box-shadow: 0 0 16px rgba(168,85,247,0.50); }
-  }
-  html[data-theme="purple"] .nav-item.active,
-  html[data-theme="purple"] .btn-primary { animation: tNeon 4s linear infinite; }
-  /* Senja: bara api berdenyut dari bawah */
-  @keyframes tEmber {
-    0%, 100% { opacity: 0.5; transform: translateY(10px); }
-    50% { opacity: 1; transform: translateY(-10px); }
-  }
-  html[data-theme="sunset"] body::before {
-    content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background: radial-gradient(700px 240px at 50% 115%, rgba(249,115,22,0.20), transparent);
-    animation: tEmber 5s ease-in-out infinite;
-  }
-  /* Sakura: kelopak bunga hanyut */
-  @keyframes tPetal {
-    from { transform: translate3d(-180px,-180px,0); }
-    to { transform: translate3d(180px,180px,0); }
-  }
-  html[data-theme="sakura"] body::before {
-    content: ""; position: fixed; inset: -380px; z-index: 1; pointer-events: none;
-    background:
-      radial-gradient(circle, rgba(236,72,153,0.35) 2px, transparent 2.6px) 0 0/120px 120px,
-      radial-gradient(circle, rgba(244,114,182,0.30) 1.5px, transparent 2.1px) 60px 60px/90px 90px;
-    animation: tPetal 20s linear infinite;
-  }
-  /* Hitam Pekat: bintang berkelip */
-  @keyframes tStar { 0%, 100% { opacity: 0.25; } 50% { opacity: 0.9; } }
-  html[data-theme="midnight"] body::before {
-    content: ""; position: fixed; inset: 0; z-index: 1; pointer-events: none;
-    background:
-      radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1.6px) 0 0/26px 26px,
-      radial-gradient(circle, rgba(34,211,238,0.7) 1px, transparent 1.6px) 13px 13px/34px 34px;
-    animation: tStar 3.5s ease-in-out infinite;
-  }
-  /* Terminal Retro: sorot CRT menyapu layar */
-  @keyframes tScan { from { transform: translateY(-140px); } to { transform: translateY(110vh); } }
-  html[data-theme="terminal"] body::before {
-    content: ""; position: fixed; left: 0; right: 0; top: 0; height: 140px; z-index: 1; pointer-events: none;
-    background: linear-gradient(180deg, transparent, rgba(51,255,102,0.08), transparent);
-    animation: tScan 8s linear infinite;
-  }
-
   * { box-sizing: border-box; }
   ::selection { background: rgba(var(--accent-rgb), 0.3); }
 
   body {
     margin: 0;
     padding: 24px 18px 60px;
-    background:
-      radial-gradient(circle at 1px 1px, var(--grid-dot) 1px, transparent 0) 0 0/22px 22px,
-      linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    background: var(--bg);
     color: var(--text);
     font-family: var(--font-body);
     min-height: 100vh;
     transition: background-color 0.25s ease, color 0.2s ease;
   }
 
-  .container { max-width: 1200px; margin: 0 auto; position: relative; }
+  .container { max-width: 1360px; margin: 0 auto; }
 
   .skip-link {
     position: absolute; left: -9999px; top: 0;
@@ -608,8 +436,6 @@
     border-color: var(--accent-dim);
     color: var(--accent);
   }
-  html[data-theme="red"] .nav-item.active,
-  html[data-theme="green"] .nav-item.active { color: var(--accent); }
   .nav-item .nav-dot {
     width: 6px; height: 6px; border-radius: 50%;
     background: var(--text-dim); margin-left: auto; flex-shrink: 0;
@@ -631,16 +457,7 @@
     position: relative; overflow: hidden;
     transition: background-color 0.25s ease, border-color 0.25s ease;
   }
-  .header::before {
-    content: ""; position: absolute; inset: 0;
-    background-image:
-      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
-      linear-gradient(var(--grid-line) 1px, transparent 1px);
-    background-size: 28px 28px;
-    mask-image: linear-gradient(180deg, rgba(0,0,0,0.6), transparent 70%);
-    pointer-events: none;
-  }
-  .brand { display: flex; align-items: center; gap: 12px; position: relative; z-index: 1; }
+  .brand { display: flex; align-items: center; gap: 0; }
   .brand-icon {
     width: 42px; height: 42px; flex-shrink: 0;
     border-radius: 10px;
@@ -658,7 +475,7 @@
   h1 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
   .page-desc { margin: 3px 0 0; font-size: 13px; color: var(--text-muted); }
 
-  .status-cluster { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .status-cluster { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .led-pill {
     display: flex; align-items: center; gap: 8px;
     padding: 8px 14px 8px 12px; border-radius: 999px;
@@ -1258,13 +1075,24 @@
   }
   @media (max-width: 900px) {
     .app-shell { flex-direction: column; }
-    .sidebar { width: 100%; position: static; padding: 12px; }
+    .sidebar {
+      display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: center; gap: 8px 12px;
+      width: 100%; position: static; padding: 12px;
+    }
     .sidebar-brand { display: none; }
     .nav-label { display: none; }
-    .nav-list { flex-direction: row; gap: 8px; margin-bottom: 10px; overflow-x: auto; padding-bottom: 2px; }
-    .nav-item { flex: 1; justify-content: center; white-space: nowrap; }
+    .nav-list {
+      grid-column: 1 / -1; flex-direction: row; gap: 4px;
+      margin: 0; overflow-x: auto; padding: 0 0 2px;
+    }
+    .nav-item { flex: 1; justify-content: center; gap: 6px; white-space: nowrap; }
     .nav-item .nav-dot { display: none; }
-    .theme-picker { margin-bottom: 10px; }
+    .conn-plate, .theme-picker { margin: 0; min-width: 0; }
+    .conn-plate { padding: 9px 10px; }
+    .conn-row { gap: 6px; }
+    .theme-picker .nav-item { height: 100%; }
+    .credit-plate { display: none; }
     .theme-menu { left: 0; right: 0; min-width: 0; }
   }
   @media (max-width: 760px) {
@@ -1289,13 +1117,6 @@
     .mode-badge.flash { animation: none; }
     .alarm-state.firing, #suhuWidget.alarming .readout { animation: none; }
     .toast { animation: none; }
-    html[data-theme] body::before,
-    html[data-theme="red"] .nav-item.active,
-    html[data-theme="purple"] .nav-item.active,
-    html[data-theme="purple"] .btn-primary,
-    html[data-theme="green"] .card,
-    html[data-theme="green"] .sidebar { animation: none; }
-    html[data-theme="mono"] .card-head h2::after { content: none; }
     * { transition: none !important; }
   }
   /* ---------- v3.0: statistik sesi, perintah manual, gamepad ---------- */
@@ -1311,192 +1132,18 @@
   .cmd-form input:disabled { opacity: 0.5; }
   .cmd-form input:focus { outline: none; border-color: var(--accent-dim); }
 
-  /* ================= FX POLISH v3.1 — lapisan visual & animasi tambahan ================= */
-
-  /* --- Ambient: cahaya aurora lembut mengambang di belakang UI --- */
-  .fx-ambient { position: fixed; inset: -18%; z-index: 0; pointer-events: none; overflow: hidden; }
-  .fx-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .55; will-change: transform; }
-  .fx-blob.b1 { width: 48vw; height: 48vw; left: -10vw; top: -12vh;
-    background: radial-gradient(circle, rgba(var(--accent-rgb), .22), transparent 65%);
-    animation: fxDrift1 26s ease-in-out infinite; }
-  .fx-blob.b2 { width: 40vw; height: 40vw; right: -8vw; top: 24vh;
-    background: radial-gradient(circle, rgba(94,234,212,.14), transparent 65%);
-    animation: fxDrift2 34s ease-in-out infinite; }
-  .fx-blob.b3 { width: 44vw; height: 44vw; left: 18vw; bottom: -18vh;
-    background: radial-gradient(circle, rgba(var(--accent-rgb), .12), transparent 70%);
-    animation: fxDrift3 40s ease-in-out infinite; }
-  html[data-theme="red"] .fx-blob, html[data-theme="mono"] .fx-blob,
-  html[data-theme="green"] .fx-blob, html[data-theme="sakura"] .fx-blob { opacity: .3; }
-  @keyframes fxDrift1 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(7vw, 6vh) scale(1.16); } }
-  @keyframes fxDrift2 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(-8vw, 5vh) scale(.9); } }
-  @keyframes fxDrift3 { 0%, 100% { transform: translate(0, 0) scale(1); } 50% { transform: translate(5vw, -7vh) scale(1.12); } }
-  /* pastikan konten selalu di atas lapisan ambient */
-  .container { z-index: 1; }
-
-  /* --- Transisi antar halaman + masuk bertingkat (stagger) --- */
-  .page:not(.page-hidden) { animation: fxPageIn .45s cubic-bezier(.22, .9, .3, 1) both; }
-  @keyframes fxPageIn { from { opacity: 0; } to { opacity: 1; } }
-  .header, .sidebar { animation: fxRise .5s cubic-bezier(.2, .9, .25, 1) both; }
-  .sidebar { animation-delay: .03s; }
-  .stats .stat { animation: fxRise .5s cubic-bezier(.2, .9, .25, 1) both; }
-  .stats .stat:nth-child(2) { animation-delay: .05s; }
-  .stats .stat:nth-child(3) { animation-delay: .10s; }
-  .stats .stat:nth-child(4) { animation-delay: .15s; }
-  .stats .stat:nth-child(5) { animation-delay: .20s; }
-  .grid > .card { animation: fxRise .55s cubic-bezier(.2, .9, .25, 1) both; }
-  .grid > .card:nth-child(2) { animation-delay: .08s; }
-  .grid > .card:nth-child(3) { animation-delay: .16s; }
-  @keyframes fxRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
-
-  /* --- Kartu: terangkat + garis aksen saat hover --- */
-  .card { position: relative; transition: transform .28s cubic-bezier(.2, .8, .2, 1), box-shadow .28s ease, border-color .28s ease; }
-  .card::before { content: ""; position: absolute; top: 0; left: 22px; right: 22px; height: 2px; border-radius: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity: 0; transform: scaleX(.25); transition: opacity .3s ease, transform .3s ease; pointer-events: none; }
-  .card:hover { transform: translateY(-3px); border-color: var(--accent-dim);
-    box-shadow: 0 16px 40px rgba(0,0,0,.35), 0 0 24px rgba(var(--accent-rgb), .12); }
-  .card:hover::before { opacity: .85; transform: scaleX(1); }
-  .stat { transition: transform .25s ease, border-color .25s ease; }
-  .stat:hover { transform: translateY(-2px); border-color: var(--accent-dim); }
-
-  /* --- Tombol: kilau sapuan + micro-press --- */
-  .btn { position: relative; overflow: hidden; }
-  .btn::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.30) 50%, transparent 65%);
-    transform: translateX(-130%); transition: transform .55s ease; }
-  .btn:hover:not(:disabled)::after { transform: translateX(130%); }
-  .btn:hover:not(:disabled) { transform: translateY(-1px); }
-  .btn:active:not(:disabled) { transform: translateY(1px) scale(.97); }
-  .btn-primary.connected { animation: fxBreath 1.8s ease-in-out infinite; }
-  @keyframes fxBreath {
-    0%, 100% { box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 4px 14px rgba(248,113,113,.25); }
-    50% { box-shadow: 0 1px 0 rgba(255,255,255,.25) inset, 0 4px 22px rgba(248,113,113,.55); }
-  }
-  #demoBtn.active { animation: fxDemoBreath 2.2s ease-in-out infinite; }
-  @keyframes fxDemoBreath {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(94,234,212,.25); }
-    50% { box-shadow: 0 0 18px 2px rgba(94,234,212,.35); }
-  }
-
-  /* --- LED status: riak memancar --- */
-  .led-dot.on { animation: pulse 2s ease-in-out infinite, fxRingOn 2.2s ease-out infinite; }
-  @keyframes fxRingOn {
-    0% { box-shadow: 0 0 0 3px rgba(74,222,128,.15), 0 0 10px rgba(74,222,128,.6), 0 0 0 0 rgba(74,222,128,.5); }
-    70%, 100% { box-shadow: 0 0 0 3px rgba(74,222,128,.15), 0 0 10px rgba(74,222,128,.6), 0 0 0 11px rgba(74,222,128,0); }
-  }
-  .led-dot.busy { animation: pulse .8s ease-in-out infinite, fxBusy .8s ease-out infinite; }
-  @keyframes fxBusy {
-    0% { box-shadow: 0 0 0 3px rgba(251,191,36,.15), 0 0 10px rgba(251,191,36,.6), 0 0 0 0 rgba(251,191,36,.55); }
-    70%, 100% { box-shadow: 0 0 0 3px rgba(251,191,36,.15), 0 0 10px rgba(251,191,36,.6), 0 0 0 9px rgba(251,191,36,0); }
-  }
-  .led-dot.demo { animation: pulse 2s ease-in-out infinite, fxDemoRing 2.4s ease-out infinite; }
-  @keyframes fxDemoRing {
-    0% { box-shadow: 0 0 0 3px var(--cyan-dim), 0 0 10px var(--cyan), 0 0 0 0 rgba(94,234,212,.5); }
-    70%, 100% { box-shadow: 0 0 0 3px var(--cyan-dim), 0 0 10px var(--cyan), 0 0 0 11px rgba(94,234,212,0); }
-  }
-
-  /* --- Angka pop saat berubah (difasilitasi observer di bawah) --- */
-  .fx-pop { display: inline-block; animation: fxPop .5s cubic-bezier(.2, 1.4, .4, 1); }
-  @keyframes fxPop {
-    0% { transform: scale(1); text-shadow: 0 0 0 rgba(var(--accent-rgb), 0); }
-    30% { transform: scale(1.16); text-shadow: 0 0 14px rgba(var(--accent-rgb), .75); }
-    100% { transform: scale(1); text-shadow: 0 0 0 rgba(var(--accent-rgb), 0); }
-  }
-  .mode-badge, .readout, #lampuStatus { transition: color .3s ease, text-shadow .3s ease; }
-
-  /* --- Alarm menyala: seluruh kartu ikut berdenyut merah --- */
-  .card:has(.alarm-state.firing) { border-color: var(--danger); animation: fxAlarmCard 1.1s ease-in-out infinite; }
-  @keyframes fxAlarmCard {
-    0%, 100% { box-shadow: 0 0 0 1px rgba(248,113,113,.35), var(--shadow); }
-    50% { box-shadow: 0 0 30px rgba(248,113,113,.5), 0 0 0 2px rgba(248,113,113,.6), var(--shadow); }
-  }
-  .alarm-state.firing { animation: fxAlarmBadge 1.1s ease-in-out infinite; }
-  @keyframes fxAlarmBadge {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: .6; transform: scale(1.12); }
-  }
-
-  /* --- Baris log baru: masuk meluncur + kilat accent --- */
-  .log-line { animation: fxLogIn .4s ease both; }
-  @keyframes fxLogIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
-
-  /* --- Toast: masuk memantul dari kanan + strip warna --- */
-  .toast { animation: fxToastIn .5s cubic-bezier(.18, 1.35, .4, 1) both; border-left: 3px solid var(--cyan); }
-  @keyframes fxToastIn { from { opacity: 0; transform: translateX(26px) scale(.92); } to { opacity: 1; transform: none; } }
-  .toast-success { border-left-color: var(--success); }
-  .toast-warn { border-left-color: var(--warn); }
-  .toast-error { border-left-color: var(--danger); }
-
-  /* --- D-pad: tombol menyala berdenyut saat ditahan --- */
-  .dpad-btn:not(:disabled):hover { transform: translateY(-1px) scale(1.03); }
-  .dpad-btn.active { animation: fxPadGlow 1s ease-in-out infinite alternate; }
-  @keyframes fxPadGlow {
-    from { box-shadow: 0 0 10px rgba(var(--accent-rgb), .25); }
-    to { box-shadow: 0 0 26px rgba(var(--accent-rgb), .65), 0 0 42px rgba(var(--accent-rgb), .25); }
-  }
-
-  /* --- Slider: knob membesar + halo saat diseret --- */
-  input[type=range] { transition: filter .2s ease; }
-  input[type=range]:hover { filter: drop-shadow(0 0 6px rgba(94,234,212,.3)); }
-  input[type=range]::-webkit-slider-thumb { transition: box-shadow .15s ease, transform .12s ease; }
-  input[type=range]:hover::-webkit-slider-thumb { transform: scale(1.15);
-    box-shadow: 0 0 0 1px var(--cyan), 0 0 16px rgba(94,234,212,.45); }
-  input[type=range]:active::-webkit-slider-thumb { transform: scale(1.25);
-    box-shadow: 0 0 0 1px var(--cyan), 0 0 0 9px rgba(94,234,212,.15), 0 0 20px rgba(94,234,212,.6); }
-
-  /* --- Header: sapuan kilau berkala --- */
-  .header::after { content: ""; position: absolute; top: -40%; bottom: -40%; left: 0; width: 38%; pointer-events: none;
-    background: linear-gradient(105deg, transparent, rgba(255,255,255,.05) 45%, rgba(255,255,255,.11) 50%, rgba(255,255,255,.05) 55%, transparent);
-    animation: fxSweep 8s ease-in-out infinite; }
-  @keyframes fxSweep {
-    0%, 55% { transform: translateX(-160%) skewX(-14deg); }
-    100% { transform: translateX(420%) skewX(-14deg); }
-  }
-
-  /* --- Menu aktif: bilah aksen di kiri --- */
-  .nav-item { position: relative; }
-  .nav-item::before { content: ""; position: absolute; left: -1px; top: 26%; bottom: 26%; width: 3px; border-radius: 999px;
-    background: var(--accent); opacity: 0; transform: scaleY(.4); transition: opacity .25s ease, transform .25s ease; }
-  .nav-item.active::before { opacity: 1; transform: scaleY(1); box-shadow: 0 0 8px rgba(var(--accent-rgb), .8); }
-  .nav-item.active { box-shadow: 0 0 18px rgba(var(--accent-rgb), .1); }
-
-  /* --- Scrollbar halus serba tema --- */
-  * { scrollbar-width: thin; scrollbar-color: var(--track) transparent; }
-  ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--track); border-radius: 999px; border: 2px solid transparent; background-clip: padding-box; }
-  ::-webkit-scrollbar-thumb:hover { background: var(--accent-dim); background-clip: padding-box; }
-
-  /* --- Tema tanpa animasi (Noir/Terminal): matikan angkat hover kartu --- */
-  html[data-theme="mono"] .card:hover, html[data-theme="terminal"] .card:hover { transform: none; }
-
-  /* --- Hormati preferensi hemat gerak --- */
-  @media (prefers-reduced-motion: reduce) {
-    .fx-ambient { display: none; }
-    .page:not(.page-hidden), .header, .sidebar, .stats .stat, .grid > .card,
-    .log-line, .toast, .led-dot.on, .led-dot.busy, .led-dot.demo,
-    .btn-primary.connected, #demoBtn.active, .fx-pop,
-    .card:has(.alarm-state.firing), .alarm-state.firing, .dpad-btn.active, .header::after,
-    .fx-blob { animation: none !important; }
-    .card, .stat, .btn, .btn::after, .nav-item::before, .dpad-btn, input[type=range], input[type=range]::-webkit-slider-thumb { transition: none !important; }
-    .card:hover, .stat:hover, .btn:hover:not(:disabled), .dpad-btn:not(:disabled):hover { transform: none !important; }
-  }
-
   /* ================= UI SIMPLIFY v3.2 — teks lebih sedikit, tampilan lebih rapi ================= */
-  .header { padding: 24px 26px; }
-  h1 { font-size: 1.7rem; }
+  .header { padding: 22px 24px; }
+  h1 { font-size: 1.6rem; }
   .card { padding: 18px 20px 20px; }
   .card-head { margin-bottom: 14px; padding-bottom: 10px; }
-  .card-head h2 { color: var(--text-muted); font-size: 12px; letter-spacing: .18em; }
-  .widget-label { font-size: 13.5px; font-weight: 600; color: var(--text); }
-  .readout { font-size: 1.9rem; }
-  .stat-value { font-size: 1.15rem; }
-
-  /* kartu & panel kaca tipis di atas ambient */
-  .card, .sidebar, .header {
-    background: color-mix(in srgb, var(--panel) 82%, transparent);
-    -webkit-backdrop-filter: blur(6px) saturate(1.15); backdrop-filter: blur(6px) saturate(1.15);
+  .card-head h2 {
+    color: var(--text); font-family: var(--font-body); font-size: 15px;
+    font-weight: 650; letter-spacing: 0; text-transform: none;
   }
+  .widget-label { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .readout { font-size: 1.8rem; }
+  .stat-value { font-size: 1.15rem; }
 
   /* akordeon panduan */
   details.fold { border: 1px solid var(--border-soft); background: var(--bg-2);
@@ -1622,8 +1269,6 @@
 </style>
 </head>
 <body>
-<div class="fx-ambient" aria-hidden="true"><span class="fx-blob b1"></span><span class="fx-blob b2"></span><span class="fx-blob b3"></span></div>
-
 <a class="skip-link" href="#main">Lewati ke konten</a>
 
 <div class="container">
@@ -1716,7 +1361,7 @@
 
         <div class="theme-menu" id="themeMenu" role="listbox" aria-label="Pilih tema">
           <button class="theme-option active" data-theme="default" type="button" role="option" aria-selected="true">
-            <span class="theme-swatch" style="background:#0b111c;"><span style="background:#ffb454;"></span></span>
+            <span class="theme-swatch" style="background:#f4f6f3;"><span style="background:#166b4b;"></span></span>
             Surya
           </button>
           <button class="theme-option" data-theme="red" type="button" role="option" aria-selected="false">
@@ -1775,15 +1420,6 @@
 
       <header class="header">
         <div class="brand">
-          <div class="brand-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" stroke-width="1.6"/>
-              <circle cx="9" cy="9" r="1.3" fill="currentColor"/>
-              <circle cx="15" cy="9" r="1.3" fill="currentColor"/>
-              <path d="M8 15.5c1.2 1 2.6 1.5 4 1.5s2.8-.5 4-1.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-              <path d="M2 9h2M2 15h2M20 9h2M20 15h2" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-            </svg>
-          </div>
           <div>
             <h1 id="pageTitle">Dashboard micro:bit</h1>
             <p class="page-desc" id="pageDesc">Pantau sensor &amp; kendalikan output micro:bit.</p>
@@ -2318,7 +1954,7 @@ while True:
               <div class="theme-radios" role="radiogroup" aria-label="Tema tampilan">
                 <label class="theme-radio">
                   <input type="radio" name="setTheme" value="default" checked>
-                  <span class="tr-swatch" style="background:#0b111c;"><i style="background:#ffb454;"></i></span>
+                  <span class="tr-swatch" style="background:#f4f6f3;"><i style="background:#166b4b;"></i></span>
                   <span class="tr-name">Surya</span>
                 </label>
                 <label class="theme-radio">
@@ -2572,9 +2208,8 @@ while True:
   var DATA_KEY = 'microbitData';
   var FAN_KEY = 'microbitFan';
   var SETTING_KEYS = [THEME_KEY, ALARM_KEY, AUTORECONN_KEY, CONN_KEY, UI_KEY, DATA_KEY, FAN_KEY];
-  var EXPORT_KEYS = [THEME_KEY, ALARM_KEY, AUTORECONN_KEY, CONN_KEY, UI_KEY, DATA_KEY, FAN_KEY];
   var VALID_THEMES = ['default', 'red', 'mono', 'skyblue', 'green', 'purple', 'sunset', 'sakura', 'midnight', 'terminal'];
-  var META_THEME_COLORS = { default: '#0b111c', red: '#fff7f7', mono: '#ffffff', skyblue: '#020509', green: '#f5fff7', purple: '#120a24', sunset: '#160b08', sakura: '#fff5f7', midnight: '#000000', terminal: '#020604' };
+  var META_THEME_COLORS = { default: '#f4f6f3', red: '#fff7f7', mono: '#ffffff', skyblue: '#020509', green: '#f5fff7', purple: '#120a24', sunset: '#160b08', sakura: '#fff5f7', midnight: '#000000', terminal: '#020604' };
   var UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
   var RECORD_MAX = 10000;         // default baris rekaman sesi
   var STALE_AFTER_MS = 5000;      // default data dianggap basi
@@ -4363,7 +3998,7 @@ while True:
       app: 'microbit-control-panel', version: 1,
       exportedAt: new Date().toISOString(), settings: {}
     };
-    EXPORT_KEYS.forEach(function (k) {
+    SETTING_KEYS.forEach(function (k) {
       try { data.settings[k] = localStorage.getItem(k); }
       catch (e) { data.settings[k] = null; }
     });
@@ -4941,26 +4576,6 @@ while True:
   logActivity('Klik "Hubungkan ke Micro:bit" atau aktifkan Mode Demo untuk mulai.', 'sys');
 })();
 </script>
-<script>
-/* FX polish (non-invasif): efek "pop" tiap kali nilai angka berubah.
-   Memakai MutationObserver, jadi tidak menyentuh logika data utama. */
-(function () {
-  'use strict';
-  try {
-    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    var targets = document.querySelectorAll('#suhuVal, #kelembabanVal, #modeVal, #statRx, #statTx');
-    Array.prototype.forEach.call(targets, function (node) {
-      new MutationObserver(function () {
-        node.classList.remove('fx-pop');
-        void node.offsetWidth; // reflow kecil untuk restart animasi
-        node.classList.add('fx-pop');
-      }).observe(node, { childList: true, characterData: true, subtree: true });
-    });
-    document.addEventListener('animationend', function (e) {
-      if (e.target && e.target.classList) e.target.classList.remove('fx-pop');
-    });
-  } catch (err) { /* browser lama tanpa MutationObserver: abaikan diam-diam */ }
-})();
-</script>
+
 </body>
 </html>
