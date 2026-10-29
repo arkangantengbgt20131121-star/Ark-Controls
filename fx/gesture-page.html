@@ -1,0 +1,73 @@
+      <!-- ==================== GESTUR TANGAN (TEACHABLE MACHINE) ==================== -->
+      <div class="page page-hidden" id="page-gesture">
+        <div class="grid">
+
+          <div class="card gest-card">
+            <div class="card-head">
+              <h2>Kamera &amp; Model</h2>
+            </div>
+            <div class="gest-stage" id="gestStage">
+              <video id="gestVideo" autoplay playsinline muted></video>
+              <div class="gest-off" id="gestOff">Kamera mati — klik <strong>Mulai Deteksi</strong></div>
+              <div class="gest-badge" id="gestBadge" hidden>—</div>
+            </div>
+            <div class="gest-row">
+              <button class="btn btn-primary" id="gestStartBtn" type="button">▶ Mulai Deteksi</button>
+              <button class="btn btn-ghost" id="gestStopBtn" type="button" disabled>■ Stop</button>
+            </div>
+            <div class="gest-row">
+              <input type="url" class="gest-url" id="gestUrlInput" spellcheck="false"
+                     value="https://teachablemachine.withgoogle.com/models/dLWidtkCQ/"
+                     placeholder="https://teachablemachine.withgoogle.com/models/XXXXX/"
+                     aria-label="Tautan model Teachable Machine">
+              <button class="icon-btn" id="gestLoadBtn" type="button">Muat model</button>
+            </div>
+            <div class="gest-row">
+              <label class="alarm-check"><input type="checkbox" id="gestMirror" checked> Balik gambar (cermin)</label>
+            </div>
+            <p class="gest-status" id="gestStatus">Tempel tautan Teachable Machine lalu klik Mulai — atau Muat model saja.</p>
+          </div>
+
+          <div class="card gest-card">
+            <div class="card-head">
+              <h2>Hasil Deteksi</h2>
+            </div>
+            <div class="gest-top" id="gestTop">
+              <span class="gest-top-label" id="gestTopLabel">—</span>
+              <span class="gest-top-conf" id="gestTopConf">0%</span>
+            </div>
+            <div class="gest-live">
+              <span id="gestRate">0 pred/dtk</span>
+              <span id="gestState">Siaga</span>
+            </div>
+            <div class="gest-bars" id="gestBars"></div>
+            <div class="gest-tune">
+              <label class="alarm-field">Percaya ≥
+                <input type="range" id="gestConf" min="50" max="99" value="78">
+                <output id="gestConfVal">78%</output>
+              </label>
+              <label class="alarm-field">Tahan
+                <input type="range" id="gestHold" min="0" max="800" step="20" value="180">
+                <output id="gestHoldVal">0.18 dtk</output>
+              </label>
+              <label class="alarm-field">Jeda aksi
+                <input type="range" id="gestCd" min="200" max="3000" step="100" value="900">
+                <output id="gestCdVal">0.9 dtk</output>
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="card">
+          <div class="card-head">
+            <h2>Gerakan → Aksi</h2>
+          </div>
+          <div class="gest-map" id="gestMap"></div>
+          <div class="gest-row" style="margin-top:12px;">
+            <label class="alarm-check"><input type="checkbox" id="gestSend" checked> Kirim otomatis ke micro:bit</label>
+            <span class="gest-status" id="gestMapHint">Kelas dikenali otomatis dari model — atur aksinya di atas.</span>
+          </div>
+        </div>
+      </div>
+
